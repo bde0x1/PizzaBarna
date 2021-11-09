@@ -1,0 +1,126 @@
+﻿@model List<Product>
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
+
+
+@if (Model != null && Model.Count() > 0)
+{
+    <div class="MenuBlock">
+        @foreach (var orderItem in Model)
+        {
+            <div class="OrderItem">
+                <div class="MenuItemInfo">
+                    <div class="MenuItemName">
+                        @orderItem.MealProduct.Name
+                    </div>
+                    <div class="MenuItemDesc">
+                        @orderItem.MealProduct.Description
+                    </div>
+                </div>
+                <div class="MenuItemPrice">
+                    @orderItem.MealProduct.Price FT
+                </div>
+                <div class="MenuItemAmount">
+                    @orderItem.Amount db
+                </div>
+                <div>
+                    @Html.ActionLink("Remove", "Remove", "Cart", new { @id = orderItem.MealProduct.MealID })
+                </div>
+            </div>
+            @if (orderItem.MealProduct.MealType == MealType.PIZZA)
+            {
+                <div class="OrderBottom">
+                    @if (orderItem.MealProduct.BonusToppings.Eggs > 0)
+                    {
+                        <b>tojás: @orderItem.MealProduct.BonusToppings.Eggs * 300Ft, </b>
+                    }
+                    @if (orderItem.MealProduct.BonusToppings.Ham > 0)
+                    {
+                        <b>sonka: @orderItem.MealProduct.BonusToppings.Ham * 300Ft, </b>
+                    }
+                    @if (orderItem.MealProduct.BonusToppings.Sausage > 0)
+                    {
+                        <b>kolbász: @orderItem.MealProduct.BonusToppings.Sausage  * 300Ft, </b>
+                    }
+                    @if (orderItem.MealProduct.BonusToppings.Tomato > 0)
+                    {
+                        <b>paradicsom: @orderItem.MealProduct.BonusToppings.Tomato  * 300Ft, </b>
+                    }
+                </div>
+
+            }
+            else
+            {
+                <div class="OrderBottom"> </div>
+            }
+
+        }
+    </div>
+    <br />
+    <div>
+        @if (this.ViewData["Order"] as Order == null)
+        {
+            @using (Html.BeginForm("Index", "Cart", FormMethod.Post))
+            {
+                <b>Kupon kód</b>
+                <input type="text" name="coupon" />
+                <input type="submit" value="Check Coupone Code" />
+            }
+
+            @if (this.ViewData["WrongCouponCode"] != null)
+            {
+                <b>Ez a kupon rossz: @this.ViewData["WrongCouponCode"]</b>
+            }
+        }
+        else
+        {
+            <b>Valid coupon code!</b>
+            <div>@this.GetDiscount()  </div>
+        }
+
+    </div>
+    <br />
+    <div class="Overall">
+        overall: @this.GetOverall() <a class="nav-link text-dark bg-light" asp-controller="Cart" asp-action="Buy">Rendelés leadása</a>
+    </div>
+}
+else
+{
+    <div class="SiteBox">
+        a kosarad üres
+        <a class="nav-link text-dark bg-light" asp-controller="Home" asp-action="Menu">itt</a> rendelhetsz
+    </div>
+}
+
+@functions{
+    private string GetOverall()
+    {
+        int overall = 0;
+        foreach (var orderItem in Model)
+        {
+            overall += orderItem.MealProduct.Price;
+            if (orderItem.MealProduct.MealType == MealType.PIZZA)
+            {
+                overall += orderItem.MealProduct.BonusToppings.Eggs * 300;
+                overall += orderItem.MealProduct.BonusToppings.Ham * 300;
+                overall += orderItem.MealProduct.BonusToppings.Sausage * 300;
+                overall += orderItem.MealProduct.BonusToppings.Tomato * 300;
+
+            }
+        }
+        if (((Order)this.ViewData["Order"]) != null)
+        {
+            var discount = ((Order)this.ViewData["Order"]).ValidCoupon.Discount / 100.0;
+            return ((overall) - (overall * discount)).ToString();
+        }
+        return overall.ToString();
+    }
+
+    private string GetDiscount()
+    {
+        var discount = ((Order)this.ViewData["Order"]).ValidCoupon.Discount;
+        var newOverall = int.Parse(this.GetOverall()) * discount / 100.0;
+
+        return discount + " % -> " + newOverall + " Ft";
+    }
+}

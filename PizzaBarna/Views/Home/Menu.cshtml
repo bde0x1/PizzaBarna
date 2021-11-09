@@ -1,0 +1,185 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
+@model List<IMeal>
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "Pizza Barna";
+}
+
+<h2>Pizzák:</h2>
+<br />
+<h2>30 cm es:</h2>
+<br />
+<div class="MenuBlock">
+
+    @foreach (var menuItem in Model)
+    {
+        if (menuItem.MealType == MealType.PIZZA)
+        {
+            var pizza = menuItem as Pizza;
+            if (pizza.MealAmount == Amount.SIZE30CM)
+            {
+                <div class="MenuItem">
+                    <div class="MenuItemPicture">
+                        <img src="~/Assets/Menu/@this.GetPictureNameAndExt(pizza.Name)" />
+                    </div>
+                    <div class="MenuItemInfo">
+                        <div class="MenuItemName">
+                            @pizza.Name
+                        </div>
+                        <div class="MenuItemDesc">
+                            @pizza.Description
+                        </div>
+                    </div>
+                    <div class="MenuItemPrice">
+                        @pizza.Price FT
+                    </div>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <div class="OrderMenuItem">
+                            @Html.ActionLink("Add To Cart", "AddToCart", "Home", new { @data = JsonSerializer.Serialize(pizza, new JsonSerializerOptions { Converters = { new JsonStringEnumConverter() } }) })
+                        </div>
+                    }
+                    else
+                    {
+                        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login to order</a>
+                    }
+                </div>
+            }
+        }
+    }
+</div>
+<br />
+<br />
+<h2>50 cm es:</h2>
+<br />
+<div class="MenuBlock">
+
+    @foreach (var menuItem in Model)
+    {
+        if (menuItem.MealType == MealType.PIZZA)
+        {
+            var pizza = menuItem as Pizza;
+            if (pizza.MealAmount == Amount.SIZE50CM)
+            {
+                <div class="MenuItem">
+                    <div class="MenuItemPicture">
+                        <img src="~/Assets/Menu/@this.GetPictureNameAndExt(pizza.Name)" />
+                    </div>
+                    <div class="MenuItemInfo">
+                        <div class="MenuItemName">
+                            @pizza.Name
+                        </div>
+                        <div class="MenuItemDesc">
+                            @pizza.Description
+                        </div>
+                    </div>
+                    <div class="MenuItemPrice">
+                        @pizza.Price FT
+                    </div>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <div class="OrderMenuItem">
+                            @Html.ActionLink("Add To Cart", "AddToCart", "Home", new { @data = JsonSerializer.Serialize(pizza) })
+                        </div>
+                    }
+                    else
+                    {
+                        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login to order</a>
+                    }
+                </div>
+            }
+        }
+    }
+</div>
+
+<br />
+<br />
+<h2>Hamburgerek:</h2>
+<br />
+<div class="MenuBlock">
+    @foreach (var menuItem in Model)
+    {
+        if (menuItem.MealType == MealType.HAMBURGER)
+        {
+            var hamburger = menuItem as Hamburger;
+            <div class="MenuItem">
+                <div class="MenuItemPicture">
+                    <img src="~/Assets/Menu/@this.GetPictureNameAndExt(hamburger.Name)" />
+                </div>
+                <div class="MenuItemInfo">
+                    <div class="MenuItemName">
+                        @hamburger.Name
+                    </div>
+                    <div class="MenuItemDesc">
+                        @hamburger.Description
+                    </div>
+                </div>
+                <div class="MenuItemPrice">
+                    @hamburger.Price FT
+                </div>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <div class="OrderMenuItem">
+                        @Html.ActionLink("Add To Cart", "AddToCart", "Home", new { @data = JsonSerializer.Serialize(hamburger) })
+                    </div>
+                }
+                else
+                {
+                    <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login to order</a>
+                }
+            </div>
+        }
+    }
+</div>
+<br />
+<br />
+<h2>Tészták:</h2>
+<br />
+<div class="MenuBlock">
+    @foreach (var menuItem in Model)
+    {
+        if (menuItem.MealType == MealType.PASTA)
+        {
+            var pasta = menuItem as Pasta;
+
+            <div class="MenuItem">
+                <div class="MenuItemPicture">
+                    <img src="~/Assets/Menu/@this.GetPictureNameAndExt(pasta.Name)" />
+                </div>
+                <div class="MenuItemInfo">
+                    <div class="MenuItemName">
+                        @pasta.Name
+                    </div>
+                    <div class="MenuItemDesc">
+                        @pasta.Description
+                    </div>
+                </div>
+                <div class="MenuItemPrice">
+                    @pasta.Price FT
+                </div>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <div class="OrderMenuItem">
+                        @Html.ActionLink("Add To Cart", "AddToCart", "Home", new { @data = JsonSerializer.Serialize(pasta) })
+                    </div>
+                }
+                else
+                {
+                    <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login to order</a>
+                }
+            </div>
+        }
+    }
+</div>
+
+@functions{
+    private string GetPictureNameAndExt(string name)
+    {
+        return name + ".png";
+    }
+}

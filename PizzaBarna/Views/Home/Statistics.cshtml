@@ -1,0 +1,130 @@
+﻿@model Statistics
+
+<h2>Pizzák:</h2>
+<br />
+<h2>30 cm es:</h2>
+<br />
+<div class="MenuBlock">
+
+    @foreach (var menuItem in Model.PizzaStatistics)
+    {
+        if (menuItem.Product.MealType == MealType.PIZZA)
+        {
+            if (menuItem.Product.MealAmount == Amount.SIZE30CM)
+            {
+                <div class="MenuItem">
+                    <div class="MenuItemPicture">
+                        <img src="~/Assets/Menu/@this.GetPictureNameAndExt(menuItem.Product.Name)" />
+                    </div>
+                    <div class="MenuItemInfo">
+                        <div class="MenuItemName">
+                            @menuItem.Product.Name
+                        </div>
+                        <div class="MenuItemDesc">
+                            @menuItem.Product.Description
+                        </div>
+                    </div>
+                    <div class="MenuItemPrice">
+                        @menuItem.OrderCount db rendelés
+                    </div>
+                </div>
+            }
+        }
+    }
+</div>
+<br />
+<br />
+<h2>50 cm es:</h2>
+<br />
+<div class="MenuBlock">
+
+    @foreach (var menuItem in Model.PizzaStatistics)
+    {
+        if (menuItem.Product.MealType == MealType.PIZZA)
+        {
+            if (menuItem.Product.MealAmount == Amount.SIZE50CM)
+            {
+                <div class="MenuItem">
+                    <div class="MenuItemPicture">
+                        <img src="~/Assets/Menu/@this.GetPictureNameAndExt(menuItem.Product.Name)" />
+                    </div>
+                    <div class="MenuItemInfo">
+                        <div class="MenuItemName">
+                            @menuItem.Product.Name
+                        </div>
+                        <div class="MenuItemDesc">
+                            @menuItem.Product.Description
+                        </div>
+                    </div>
+                    <div class="MenuItemPrice">
+                        @menuItem.OrderCount db rendelés
+                    </div>
+                </div>
+            }
+        }
+    }
+</div>
+
+<br />
+<br />
+<h2>Hamburgerek:</h2>
+<br />
+<div class="MenuBlock">
+    @foreach (var menuItem in Model.HamburgerStatistics)
+    {
+        if (menuItem.Product.MealType == MealType.HAMBURGER)
+        {
+            <div class="MenuItem">
+                <div class="MenuItemPicture">
+                    <img src="~/Assets/Menu/@this.GetPictureNameAndExt(menuItem.Product.Name)" />
+                </div>
+                <div class="MenuItemInfo">
+                    <div class="MenuItemName">
+                        @menuItem.Product.Name
+                    </div>
+                    <div class="MenuItemDesc">
+                        @menuItem.Product.Description
+                    </div>
+                </div>
+                <div class="MenuItemPrice">
+                    @menuItem.OrderCount db rendelés
+                </div>
+            </div>
+        }
+    }
+</div>
+<br />
+<br />
+<h2>Tészták:</h2>
+<br />
+<div class="MenuBlock">
+    @foreach (var menuItem in Model.PastaStatistics)
+    {
+        if (menuItem.Product.MealType == MealType.PASTA)
+        {
+            <div class="MenuItem">
+                <div class="MenuItemPicture">
+                    <img src="~/Assets/Menu/@this.GetPictureNameAndExt(menuItem.Product.Name)" />
+                </div>
+                <div class="MenuItemInfo">
+                    <div class="MenuItemName">
+                        @menuItem.Product.Name
+                    </div>
+                    <div class="MenuItemDesc">
+                        @menuItem.Product.Description
+                    </div>
+                </div>
+                <div class="MenuItemPrice">
+                    @menuItem.OrderCount db rendelés
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@functions{
+    private string GetPictureNameAndExt(string name)
+    {
+        return name + ".png";
+    }
+}

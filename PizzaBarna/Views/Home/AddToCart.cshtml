@@ -1,0 +1,72 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
+@using System.Reflection;
+@model Meal
+
+<div class="MenuBlock">
+    @if (Model != null)
+    {
+        <h2>A rendelésed:</h2>
+        <div class="MenuItem">
+            <div class="MenuItemPicture">
+                <img src="~/Assets/Menu/@this.GetPictureNameAndExt(Model.Name)" />
+            </div>
+            <div class="MenuItemInfo">
+                <div class="MenuItemName">
+                    @Model.Name
+                </div>
+                <div class="MenuItemDesc">
+                    @Model.Description
+                </div>
+            </div>
+            <div class="MenuItemPrice">
+                @Model.Price FT
+            </div>
+        </div>
+        @if (Model.MealType == MealType.PIZZA)
+        {
+            <h2>Tudsz hozzáadni bónusz feltétet is, minden feltét 300 Ft</h2>
+            @foreach (var topping in typeof(Topping).GetProperties())
+            {
+                <div>
+                    <div>@topping.Name</div>
+                    @if (topping.Name == "Eggs")
+                    {
+                        <div>@Model.BonusToppings.Eggs.ToString()</div>
+                    }
+                    else if (topping.Name == "Tomato")
+                    {
+                        <div>@Model.BonusToppings.Tomato.ToString()</div>
+                    }
+                    else if (topping.Name == "Ham")
+                    {
+                        <div>@Model.BonusToppings.Ham.ToString()</div>
+                    }
+                    else if (topping.Name == "Sausage")
+                    {
+                        <div>@Model.BonusToppings.Sausage.ToString()</div>
+                    }
+                    <div>
+                        @this.Html.ActionLink("Add Topping", "AddToCart", "Home", new { @data = JsonSerializer.Serialize(Model, new JsonSerializerOptions { Converters = { new JsonStringEnumConverter() } }), @topping = JsonSerializer.Serialize(topping.Name) });
+                    </div>
+                </div>
+
+            }
+        }
+
+    }
+</div>
+
+<br />
+
+@Html.ActionLink("Add To Cart", "FinalizeAddToCart", "Home", new { @data = JsonSerializer.Serialize(Model, new JsonSerializerOptions { Converters = { new JsonStringEnumConverter() } }) })
+
+
+
+@functions{
+    private string GetPictureNameAndExt(string name)
+    {
+        return name + ".png";
+    }
+}
